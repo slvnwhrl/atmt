@@ -1,0 +1,100 @@
+k = 1
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 10.7 33.5/13.7/7.2/4.0 (BP = 1.000 ratio = 1.433 hyp_len = 5757 ref_len = 4017)
+
+
+k = 2
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 12.1 36.0/15.3/8.2/4.7 (BP = 1.000 ratio = 1.334 hyp_len = 5358 ref_len = 4017)
+
+
+k = 3
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 12.7 37.4/16.1/8.7/5.0 (BP = 1.000 ratio = 1.270 hyp_len = 5100 ref_len = 4017)
+
+
+k = 4
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 13.4 38.8/17.0/9.2/5.3 (BP = 1.000 ratio = 1.229 hyp_len = 4937 ref_len = 4017)
+
+
+k = 5
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 13.8 39.4/17.3/9.6/5.6 (BP = 1.000 ratio = 1.189 hyp_len = 4776 ref_len = 4017)
+
+
+k = 6
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 13.8 39.5/17.4/9.6/5.6 (BP = 1.000 ratio = 1.181 hyp_len = 4746 ref_len = 4017)
+
+
+k = 7
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.2 40.1/17.6/9.9/5.8 (BP = 1.000 ratio = 1.156 hyp_len = 4642 ref_len = 4017)
+
+
+k = 8
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.1 40.0/17.6/9.8/5.8 (BP = 1.000 ratio = 1.143 hyp_len = 4593 ref_len = 4017)
+
+
+k = 9
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.3 40.4/17.8/9.9/5.9 (BP = 1.000 ratio = 1.123 hyp_len = 4512 ref_len = 4017)
+
+
+k = 10
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.3 40.4/17.8/9.9/5.9 (BP = 1.000 ratio = 1.122 hyp_len = 4507 ref_len = 4017)
+
+
+k = 11
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.5 40.8/18.0/10.1/6.0 (BP = 1.000 ratio = 1.103 hyp_len = 4432 ref_len = 4017)
+
+
+k = 12
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.6 41.1/18.2/10.2/6.0 (BP = 1.000 ratio = 1.091 hyp_len = 4381 ref_len = 4017)
+
+
+k = 13
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 14.8 41.4/18.4/10.3/6.1 (BP = 1.000 ratio = 1.082 hyp_len = 4345 ref_len = 4017)
+
+
+k = 14
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.0 41.7/18.6/10.4/6.3 (BP = 1.000 ratio = 1.070 hyp_len = 4299 ref_len = 4017)
+
+
+k = 15
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.1 41.8/18.7/10.5/6.3 (BP = 1.000 ratio = 1.059 hyp_len = 4255 ref_len = 4017)
+
+
+k = 16
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.2 41.8/18.8/10.6/6.4 (BP = 1.000 ratio = 1.057 hyp_len = 4247 ref_len = 4017)
+
+
+k = 17
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.2 41.8/18.7/10.7/6.5 (BP = 1.000 ratio = 1.046 hyp_len = 4202 ref_len = 4017)
+
+
+k = 18
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.3 42.0/18.9/10.7/6.5 (BP = 1.000 ratio = 1.037 hyp_len = 4166 ref_len = 4017)
+
+
+k = 19
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.4 42.0/19.0/10.8/6.5 (BP = 1.000 ratio = 1.031 hyp_len = 4141 ref_len = 4017)
+
+
+k = 20
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.4 42.0/19.0/10.8/6.5 (BP = 1.000 ratio = 1.028 hyp_len = 4131 ref_len = 4017)
+
+
+k = 21
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.5 42.1/19.1/10.9/6.6 (BP = 1.000 ratio = 1.017 hyp_len = 4084 ref_len = 4017)
+
+
+k = 22
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.7 42.3/19.3/11.0/6.7 (BP = 1.000 ratio = 1.013 hyp_len = 4069 ref_len = 4017)
+
+
+k = 23
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.8 42.6/19.6/11.2/6.8 (BP = 0.997 ratio = 0.997 hyp_len = 4004 ref_len = 4017)
+
+
+k = 24
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.8 42.9/19.8/11.3/6.9 (BP = 0.985 ratio = 0.985 hyp_len = 3958 ref_len = 4017)
+
+
+k = 25
+BLEU+case.mixed+numrefs.1+smooth.exp+tok.13a+version.1.4.1 = 15.8 43.1/19.9/11.4/7.0 (BP = 0.980 ratio = 0.981 hyp_len = 3939 ref_len = 4017)
+
+

@@ -22,13 +22,16 @@ def get_args():
     # Add data arguments
     parser.add_argument('--data', default='indomain/prepared_data', help='path to data directory')
     parser.add_argument('--checkpoint-path', default='checkpoints/checkpoint_best.pt', help='path to the model file')
-    parser.add_argument('--batch-size', default=None, type=int, help='maximum number of sentences in a batch')
+    parser.add_argument('--batch-size', default=1, type=int, help='maximum number of sentences in a batch')
     parser.add_argument('--output', default='model_translations.txt', type=str,
                         help='path to the output file destination')
     parser.add_argument('--max-len', default=25, type=int, help='maximum length of generated sequence')
 
     # Add beam search arguments
     parser.add_argument('--beam-size', default=5, type=int, help='number of hypotheses expanded in beam search')
+    parser.add_argument('--alpha_ln', default=0, type=float, help='used to control the sensity of the length normalization')
+    parser.add_argument('--n_best', default=1, type=int, help='number of returned best hypothesis')
+    parser.add_argument('--gamma_diversity', default=0, type=float, help='term used to weight hypotheses in relation to score rank')
 
     return parser.parse_args()
 
@@ -54,7 +57,6 @@ def main(args):
         src_file=os.path.join(args.data, 'test.{:s}'.format(args.source_lang)),
         tgt_file=os.path.join(args.data, 'test.{:s}'.format(args.target_lang)),
         src_dict=src_dict, tgt_dict=tgt_dict)
-
     test_loader = torch.utils.data.DataLoader(test_dataset, num_workers=1, collate_fn=test_dataset.collater,
                                               batch_sampler=BatchSampler(test_dataset, 9999999,
                                                                          args.batch_size, 1, 0, shuffle=False,
@@ -89,7 +91,7 @@ def main(args):
             log_probs, next_candidates = torch.topk(torch.log(torch.softmax(decoder_out, dim=2)),
                                                     args.beam_size+1, dim=-1)
 
-        # Create number of beam_size beam search nodes for every input sentence
+        # Create number of beam_size beam search nodes for every input sentence
         for i in range(batch_size):
             for j in range(args.beam_size):
                 # __QUESTION 2: Why do we need backoff candidates?
@@ -142,8 +144,7 @@ def main(args):
 
             # see __QUESTION 1
             log_probs, next_candidates = torch.topk(torch.log(torch.softmax(decoder_out, dim=2)), args.beam_size+1, dim=-1)
-
-            # Create number of beam_size next nodes for every current node
+            # Create number of beam_size next nodes for every current node
             for i in range(log_probs.shape[0]):
                 for j in range(args.beam_size):
 
@@ -164,18 +165,22 @@ def main(args):
                     # __QUESTION 4: Why do we treat nodes that generated the end-of-sentence token differently?
 
                     # Store the node as final if EOS is generated
-                    if next_word[-1 ] == tgt_dict.eos_idx:
+                    if next_word[-1] == tgt_dict.eos_idx:
                         node = BeamSearchNode(search, node.emb, node.lstm_out, node.final_hidden,
                                               node.final_cell, node.mask, torch.cat((prev_words[i][0].view([1]),
-                                              next_word)), node.logp, node.length)
-                        search.add_final(-node.eval(), node)
+                                              next_word)), node.logp - args.gamma_diversity*(i+1), node.length)
+                        # length normalization
+                        ln = ((5 + node.length) ** args.alpha_ln) / ((5 + 1) ** args.alpha_ln)
+                        search.add_final(-node.eval() / ln, node)
 
                     # Add the node to current nodes for next iteration
                     else:
                         node = BeamSearchNode(search, node.emb, node.lstm_out, node.final_hidden,
                                               node.final_cell, node.mask, torch.cat((prev_words[i][0].view([1]),
-                                              next_word)), node.logp + log_p, node.length + 1)
-                        search.add(-node.eval(), node)
+                                              next_word)), node.logp + log_p - args.gamma_diversity*(i+1), node.length + 1)
+                        # length normalization
+                        ln = ((5 + node.length) ** args.alpha_ln) / ((5 + 1) ** args.alpha_ln)
+                        search.add((-node.eval() / ln), node)
 
             # __QUESTION 5: What happens internally when we prune our beams?
             # How do we know we always maintain the best sequences?
@@ -183,33 +188,36 @@ def main(args):
                 search.prune()
 
         # Segment into sentences
-        best_sents = torch.stack([search.get_best()[1].sequence[1:] for search in searches])
-        decoded_batch = best_sents.numpy()
-
-        output_sentences = [decoded_batch[row, :] for row in range(decoded_batch.shape[0])]
+        n_best_sents = torch.stack([torch.stack([best[1].sequence[1:] for best in search.get_best(args.n_best)]) for search in searches])
+        #best_sents = torch.stack([search.get_best()[0][1].sequence[1:] for search in searches])
+        decoded_batch = n_best_sents.numpy()
+        output_sentences = [[decoded_batch[row, n, :] for n in range(decoded_batch.shape[1])] for row in range(decoded_batch.shape[0])]
 
         # __QUESTION 6: What is the purpose of this for loop?
         temp = list()
-        for sent in output_sentences:
-            first_eos = np.where(sent == tgt_dict.eos_idx)[0]
-            if len(first_eos) > 0:
-                temp.append(sent[:first_eos[0]])
-            else:
-                temp.append(sent)
+        for n_best in output_sentences:
+            temp_temp = list()
+            for sent in n_best:
+                first_eos = np.where(sent == tgt_dict.eos_idx)[0]
+                if len(first_eos) > 0:
+                    temp_temp.append(sent[:first_eos[0]])
+                else:
+                    temp_temp.append(sent)
+            temp.append(temp_temp)
         output_sentences = temp
 
         # Convert arrays of indices into strings of words
-        output_sentences = [tgt_dict.string(sent) for sent in output_sentences]
+        output_sentences = [[tgt_dict.string(sent) for sent in n_best] for n_best in output_sentences]
 
-        for ii, sent in enumerate(output_sentences):
-            all_hyps[int(sample['id'].data[ii])] = sent
+        for ii, n_best in enumerate(output_sentences):
+            all_hyps[int(sample['id'].data[ii])] = n_best
 
 
     # Write to file
     if args.output is not None:
         with open(args.output, 'w') as out_file:
             for sent_id in range(len(all_hyps.keys())):
-                out_file.write(all_hyps[sent_id] + '\n')
+                out_file.write('\n'.join(all_hyps[sent_id]) + ('\n' if args.n_best==1 else '\n\n'))
 
 
 if __name__ == '__main__':
